@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+ 
+ <!-- Default config and other properties -->
+ <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+ <springProperty name="LOG_PATH" source="countdown.logs.folder"/>
+ 
+ <!-- Profile independent loggers --> 
+ <logger name="org.hibernate" level="ERROR"/>
+ 
+ <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+	 <encoder>
+	 	<pattern>${CONSOLE_LOG_PATTERN}</pattern>
+	 	<charset>utf8</charset>
+	 </encoder>	 
+ </appender>
+ <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	 <encoder>
+	 	<pattern>${FILE_LOG_PATTERN}</pattern>
+	 </encoder>
+	 <file>${LOG_PATH}/emergency-countdown.log</file>
+	 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	 	<fileNamePattern>${LOG_PATH}/emergency-countdown.log.%d</fileNamePattern>
+	 	<maxHistory>20</maxHistory>
+	 </rollingPolicy>
+ </appender>
+
+ <!-- Debug profile -->
+ <springProfile name="local">		 	 
+	 <logger name="org.springframework.web" level="DEBUG"/>
+	 <logger name="com.emergencycountdown" level="DEBUG"/>
+ </springProfile>
+
+ <!-- Staging/production profile -->
+ <springProfile name="test,prod">	 
+	 <logger name="org.springframework.web" level="INFO"/>
+	 <logger name="com.emergencycountdown" level="INFO"/>
+ </springProfile>
+
+ <!-- Root logger -->
+ <root level="INFO">
+ 	<appender-ref ref="CONSOLE" />
+ 	<appender-ref ref="FILE" />
+ </root>
+</configuration>
